@@ -1,0 +1,13 @@
+
+import pandas as pd
+from sqlalchemy import create_engine
+
+conn_string = 'mysql://root:kia25@localhost/students_score'
+db = create_engine(conn_string)
+conn = db.connect()
+
+files = ['stu']
+
+for file in files:
+    df = pd.read_csv(f'F:\data_analytics_pro\Student_Scores/{file}.csv')
+    df.to_sql(file, con=conn, if_exists='replace', index=False)
