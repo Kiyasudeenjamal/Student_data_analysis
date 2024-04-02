@@ -1,0 +1,103 @@
+-- What is the distribution of genders among the students?
+with tab as(
+select gender,count(id) as no_of_students from stu
+group by gender),
+tot as(
+select count(*) from stu)
+select *, ((no_of_students/(select * from tot))*100) as percentage from tab;
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+-- How many students have part-time jobs?
+select case 
+when part_time_job=1 then 'YES'
+when part_time_job=0 then 'NO'end as part_time_job,count(id) as no_of_stu from stu
+group by part_time_job;
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+-- What is the average number of absences among students?
+with tab as (
+select gender,sum(abs_days) as absence from stu
+group by gender)
+select *,((absence/(select sum(abs_days) from stu))*100) as percentage from tab;
+;
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- How many students are involved in extracurricular activities?
+select count(*) as no_of_stu from stu where Extracurricular_activities=1;
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+-- What is the distribution of weekly self-study hours among students?
+select ambition,count(id) as no_of_stu from stu
+group by ambition
+order by no_of_stu desc limit 10;
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+-- What is the average score in each subject (Math, History, Physics, Chemistry, Biology, English, Geography)?
+select avg(math) avg_of_math ,avg(History) avg_of_History,avg(physics) avg_of_physics,
+avg(Chemistry) avg_of_Chemistry, 
+avg(Biology) avg_of_Biology,
+avg(English) avg_of_English,
+avg(Geography) avg_of_Geography from stu;
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+-- What is the overall average score for each student?
+select id,first_name,last_name,
+(Math + History + Physics + Chemistry + Biology + English + Geography) / 7 AS OverallAverage from  stu
+order by OverallAverage desc limit 10;
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- fetch data who are all have extra_activities and gender will be female
+select * from stu where Extracurricular_activities=1 and gender='female';
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- group th student by ambition
+select ambition,id,first_name,total from(
+select *,row_number() over(partition by ambition order by total desc) as rk from stu) x; 
+----------------------------------------------------------------------------------------------------------------------------------------------------
+-- group the student by male and female and the partime job will be true,extra_acivities will be true  and give rank to their total mark
+select gender,id,first_name,total,rank() over(partition by gender order by gender,total desc) as rank_of_the_student
+from stu where Extracurricular_activities=1 and Part_time_job=1;
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- fetch data of the student who has study hours below 10 and  their maths mark will be greater than 90
+select id,math,total from stu where Weekly_self_study_hours<=10 and math>=90;
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- fetch the student who doesnt have ambition
+select * from stu where ambition='unknown';
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- fetch the top 10 student data who's ambition is doctor and fetch their biology mark
+with tab as(
+select id,ambition,biology,total,
+dense_rank() over(order by biology desc) as top_10 from stu 
+where ambition='doctor')
+select * from tab where top_10<=10
+;
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- fetch data frome here who has took maximum absent
+select * from stu
+where abs_days=(select max(abs_days) from stu);
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- fetch top 10 study hours and their total
+with tab as(
+select Weekly_self_study_hours,total,dense_rank() over(order by Weekly_self_study_hours desc 
+ ) as rk from stu)
+ select Weekly_self_study_hours, total from tab
+ where rk<=10;
+ ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- count the total number of student in each ambition
+select ambition,count(id) as no_of_total from stu
+group by ambition; 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ -- fetch data who doesnt have email id
+ select id,first_name,last_name from stu where email is null;
+ -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
