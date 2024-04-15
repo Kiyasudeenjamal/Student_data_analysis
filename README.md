@@ -16,3 +16,6 @@ SQL Queries: The repository contains a diverse range of SQL queries covering ess
 -- Basic Data Manipulation (Insert, Update, Delete)
 -- Creating and Modifying Tables
 -- Constraints and Indexes
+
+# Dashboard:
+![Capture](https://github.com/Kiyasudeenjamal/Student_data_analysis/assets/96764879/daa1051a-a1d3-4a84-badb-126a139b81e7)
